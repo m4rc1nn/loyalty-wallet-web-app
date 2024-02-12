@@ -1,7 +1,11 @@
-const express = require('express');
+const express = require("express");
+
+const { sequelize } = require("./database/db.js");
 
 const app = express();
 
-app.listen(3000, () => {
-    console.log('App started on port 3000');
-})
+sequelize.sync({ alter: true }).then(() => {
+    app.listen(process.env.PORT, () => {
+        console.log(`Server running on port ${process.env.PORT}`);
+    });
+});
