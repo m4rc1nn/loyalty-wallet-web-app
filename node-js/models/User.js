@@ -8,6 +8,8 @@ module.exports = (sequelize) => {
         {
             id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
             email: { type: Sequelize.STRING },
+            tempCode: {type: Sequelize.STRING},
+            tempCodeExpires: {type: Sequelize.DATE},
             name: Sequelize.STRING,
             isActive: { type: Sequelize.STRING, defaultValue: true },
             pushToken: Sequelize.STRING,

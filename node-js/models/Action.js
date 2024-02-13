@@ -7,6 +7,8 @@ module.exports = (sequelize) => {
         "action",
         {
             id: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
+            name: { type: Sequelize.STRING },
+            description: { type: Sequelize.STRING },
             type: { type: Sequelize.ENUM, values: ["ADD", "SUBTRACK"] },
             amount: { type: Sequelize.INTEGER },
         },
