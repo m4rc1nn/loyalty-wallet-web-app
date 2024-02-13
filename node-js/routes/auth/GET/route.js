@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
+const { checkToken } = require("../../../middlewares/authMiddleware");
+
 const db = require("../../../database/db");
 
-router.post("/temp-code", async (req, res) => {
-    const { data } = req.body;
+router.get("/auth/verify", checkToken, async (req, res) => {
     try {
-        const tempCode = await db.TempCode.create({ data });
         return res.status(200).json({
             status: "SUCCESS",
-            tempCode: tempCode,
+            user: req.user,
         });
     } catch (error) {
         return res.json(500).json({
