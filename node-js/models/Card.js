@@ -21,6 +21,7 @@ module.exports = (sequelize) => {
 			foreignKey: "companyId",
 			as: "company",
 		});
+		Card.hasMany(models.Action, { foreignKey: "cardId", as: "actions" });
 	};
 
 	return Card;

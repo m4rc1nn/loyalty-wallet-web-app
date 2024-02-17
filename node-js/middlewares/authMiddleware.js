@@ -3,7 +3,17 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 module.exports.checkUserToken = async (req, res, next) => {
-	const token = req.headers.authorization.split(" ");
+	if (!req.headers.authorization) {
+		return res
+			.status(401)
+			.json({ status: "ERROR", message: "User authorization fail." });
+	}
+	if (!req.headers.authorization.split(" ")[1]) {
+		return res
+			.status(401)
+			.json({ status: "ERROR", message: "User authorization fail." });
+	}
+	const token = req.headers.authorization.split(" ")[1];
 
 	jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 		if (err) {
@@ -25,7 +35,17 @@ module.exports.checkUserToken = async (req, res, next) => {
 };
 
 module.exports.checkCompanyToken = async (req, res, next) => {
-	const token = req.headers.authorization.split(" ");
+	if (!req.headers.authorization) {
+		return res
+			.status(401)
+			.json({ status: "ERROR", message: "Company authorization fail." });
+	}
+	if (!req.headers.authorization.split(" ")[1]) {
+		return res
+			.status(401)
+			.json({ status: "ERROR", message: "Company authorization fail." });
+	}
+	const token = req.headers.authorization.split(" ")[1];
 
 	jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 		if (err) {

@@ -22,6 +22,7 @@ module.exports = (sequelize) => {
 
 	Action.associate = (models) => {
 		Action.belongsTo(models.User, { foreignKey: "userId", as: "user" });
+		Action.belongsTo(models.Card, { foreignKey: "cardId", as: "card" });
 		Action.belongsTo(models.Reward, {
 			foreignKey: "rewardId",
 			as: "reward",

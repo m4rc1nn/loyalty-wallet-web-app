@@ -6,7 +6,7 @@ const {
 	checkCompanyToken,
 } = require("../../../middlewares/authMiddleware");
 
-const db = require("../../../database/db");
+const { db } = require("../../../database/db");
 
 // Endpoint do tworzenia karty dla użytkownika i firmy
 router.post("/cards", checkCompanyToken, async (req, res) => {

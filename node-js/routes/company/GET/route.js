@@ -2,27 +2,13 @@ const express = require("express");
 const router = express.Router();
 
 const { db } = require("../../../database/db");
-const { checkUserToken } = require("../../../middlewares/authMiddleware");
+const { checkCompanyToken } = require("../../../middlewares/authMiddleware");
 
-router.get("/cards", checkUserToken, async (req, res) => {
+router.get("/company/cards", checkCompanyToken, async (req, res) => {
 	try {
 		const cards = await db.Card.findAll({
-			where: { userId: req.user.id },
-			include: [
-				{
-					model: db.Company,
-					as: "company", // Ensure this matches the alias used in your association definition
-					attributes: {
-						exclude: [
-							"password",
-							"email",
-							"isActive",
-							"createdAt",
-							"updatedAt",
-						],
-					}, // Exclude specific fields
-				},
-			],
+			where: { companyId: req.company.id },
+			include: ["user"], // Assuming you want company details as well
 		});
 
 		// For each card, calculate points
@@ -30,8 +16,8 @@ router.get("/cards", checkUserToken, async (req, res) => {
 			cards.map(async (card) => {
 				const actions = await db.Action.findAll({
 					where: {
-						userId: req.user.id,
-						companyId: card.companyId,
+						userId: card.userId,
+						companyId: req.company.id,
 					},
 				});
 

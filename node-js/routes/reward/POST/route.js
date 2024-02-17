@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
-const db = require("../../../database/db");
+const { db } = require("../../../database/db");
 const { checkCompanyToken } = require("../../../middlewares/authMiddleware");
 
 router.post("/rewards", checkCompanyToken, async (req, res) => {

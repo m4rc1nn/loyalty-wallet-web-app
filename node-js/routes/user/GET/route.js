@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const db = require("../../../database/db");
+const { db } = require("../../../database/db");
 const {
 	checkUserToken,
 	checkAdminToken,
@@ -22,51 +22,46 @@ router.get("/users", checkAdminToken, async (req, res) => {
 	}
 });
 
-router.get("/users/:id", checkAdminToken, async (req, res) => {
-	const { id } = req.params;
+router.get("/user", checkUserToken, async (req, res) => {
+	const { id } = req.user;
 	try {
 		const user = await db.User.findOne({
 			include: [
 				{
 					model: db.Card,
 					as: "cards",
+					include: [
+						{
+							model: db.Action,
+							as: "actions", // Assuming the association is defined in your models
+						},
+					],
 				},
 			],
 			where: { id: id },
 		});
-		return res.status(200).json({
-			status: "SUCCESS",
-			user: user,
-		});
-	} catch (error) {
-		return res.json(500).json({
-			type: "ERROR",
-			message: error.message,
-		});
-	}
-});
 
-router.get("/users/:id/cards", checkUserToken, async (req, res) => {
-	const { id } = req.params;
-	try {
-		if (req.user.id !== id) {
-			return res
-				.json(401)
-				.json({ status: "ERROR", message: "User authorization fail." });
-		}
-		const cards = await db.Card.findAll({
-			where: [
-				{
-					userId: id,
-				},
-			],
-		});
+		// Modify the user object to include points for each card
+		const modifiedUser = user.toJSON(); // Convert Sequelize model instance to JSON
+		modifiedUser.cards = await Promise.all(
+			modifiedUser.cards.map(async (card) => {
+				const points = card.actions.reduce((acc, action) => {
+					return action.type === "ADD"
+						? acc + action.amount
+						: acc - action.amount;
+				}, 0);
+
+				delete card.actions; // Optional: Remove actions from the response if not needed
+				return { ...card, points };
+			})
+		);
+
 		return res.status(200).json({
 			status: "SUCCESS",
-			cards: cards,
+			user: modifiedUser,
 		});
 	} catch (error) {
-		return res.json(500).json({
+		return res.status(500).json({
 			type: "ERROR",
 			message: error.message,
 		});

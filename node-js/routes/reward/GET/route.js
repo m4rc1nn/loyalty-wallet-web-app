@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const db = require("../../../database/db");
+const { db } = require("../../../database/db");
 const { checkUserToken } = require("../../../middlewares/authMiddleware");
 
 router.get("/company/:companyId/rewards", async (req, res) => {

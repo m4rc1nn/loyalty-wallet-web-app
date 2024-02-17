@@ -11,9 +11,14 @@ module.exports = (sequelize) => {
 				defaultValue: Sequelize.UUIDV4,
 				primaryKey: true,
 			},
-			type: { type: Sequelize.ENUM, values: ["NORMAL", "PREMIUM"] },
-			email: { type: Sequelize.STRING },
-			name: Sequelize.STRING,
+			type: {
+				type: Sequelize.ENUM,
+				values: ["NORMAL", "PREMIUM"],
+				defaultValue: "NORMAL",
+			},
+			email: { type: Sequelize.STRING, allowNull: false },
+			password: { type: Sequelize.STRING, allowNull: false },
+			name: { type: Sequelize.STRING, allowNull: false },
 			isActive: { type: Sequelize.STRING, defaultValue: true },
 		},
 		{}
