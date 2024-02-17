@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
+import { CookiesProvider } from "next-client-cookies/server";
 import { Inter } from "next/font/google";
-import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "LoyaltyApp",
+    title: "LoyaltyApp - Zarejestruj nową firę",
     description: "Wirtualne karty lojalnościowe dla Twoich klientów",
 };
 
-export default function RootLayout({
+export default function Layout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
         <html lang="en">
-            <body className={`${inter.className} min-h-screen dark`}>{children}</body>
+            <body className={`${inter.className} bg-gray-50 dark:bg-gray-900 dark`}>
+                <CookiesProvider>{children}</CookiesProvider>
+            </body>
         </html>
     );
 }
