@@ -6,7 +6,7 @@ import { CompanyAuthProvider } from "../context/CompanyAuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "LoyaltyApp - Zarejestruj nową firę",
+    title: "LoyaltyApp - Panel firmy",
     description: "Wirtualne karty lojalnościowe dla Twoich klientów",
 };
 
@@ -17,7 +17,7 @@ export default function Layout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${inter.className} bg-gray-50 dark:bg-gray-900 dark`}>
+            <body className={`${inter.className} min-h-screen bg-gray-50 dark:bg-gray-900 dark`}>
                 <CookiesProvider>
                     <CompanyAuthProvider>{children}</CompanyAuthProvider>
                 </CookiesProvider>

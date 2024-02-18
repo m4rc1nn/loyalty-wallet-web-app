@@ -5,9 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
+import { useCompanyAuth } from "../context/CompanyAuthContext";
 
 const schema = z.object({
     email: z.string().email(),
@@ -19,6 +20,7 @@ type FormFields = z.infer<typeof schema>;
 export default function RegisterPage() {
     const cookies = useCookies();
     const router = useRouter();
+    const { checkSession } = useCompanyAuth();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -42,6 +44,10 @@ export default function RegisterPage() {
             alert("Nieprawidłowe dane.");
         }
     };
+
+    useEffect(() => {
+        checkSession(true);
+    }, []);
 
     return (
         <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
