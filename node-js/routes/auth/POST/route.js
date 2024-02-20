@@ -143,7 +143,7 @@ router.post("/auth/user/login", body("email").isEmail(), body("authToken").isStr
         }
 
         const userExist = await db.User.findOne({
-            where: { authToken: userData.authToken },
+            where: { authToken: userData.authToken, email: userData.email },
         });
 
         if (userExist) {
@@ -155,6 +155,16 @@ router.post("/auth/user/login", body("email").isEmail(), body("authToken").isStr
                 user: userExist,
                 token: token,
             });
+        }
+
+        const emailExists = await db.User.findOne({
+            where: { email: userData.email },
+        });
+        const authTokenExists = await db.User.findOne({
+            where: { authToken: userData.authToken },
+        });
+        if (emailExists || authTokenExists) {
+            return res.status(409).json({ type: "ERROR", message: "Conficts while creating new user" });
         }
 
         const user = await db.User.create(userData); // Utwórz użytkownika z przekazanych danych
