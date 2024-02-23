@@ -4,6 +4,8 @@ const { body, validationResult, check } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
+const googleUtil = require("../../../utils/googleUtil");
+
 const { db } = require("../../../database/db");
 
 require("dotenv").config();
@@ -131,8 +133,8 @@ router.post(
     }
 );
 
-router.post("/auth/user/login", body("email").isEmail(), body("authToken").isString(), async (req, res) => {
-    const userData = req.body; // Pobierz dane użytkownika z ciała żądania
+router.post("/auth/user/login", [body("email").isEmail(), body("authToken").isString()], async (req, res) => {
+    const { email, authToken } = req.body; // Pobierz email i authToken z ciała żądania
     try {
         const result = validationResult(req);
         if (!result.isEmpty()) {
@@ -142,43 +144,35 @@ router.post("/auth/user/login", body("email").isEmail(), body("authToken").isStr
             });
         }
 
-        const userExist = await db.User.findOne({
-            where: { authToken: userData.authToken, email: userData.email },
-        });
+        // Weryfikacja tokenu Google
+        const userResponse = await googleUtil.verify(authToken);
 
-        if (userExist) {
-            const token = jwt.sign({ user: userExist }, process.env.JWT_SECRET, {
-                expiresIn: "7d", // Token będzie ważny przez 1 dzień
-            });
-            return res.status(200).json({
-                type: "SUCCESS",
-                user: userExist,
-                token: token,
-            });
-        }
-
-        const emailExists = await db.User.findOne({
-            where: { email: userData.email },
+        // Znajdź lub utwórz użytkownika
+        const [user, created] = await db.User.findOrCreate({
+            where: { email: userResponse.email },
+            defaults: {
+                // wartości domyślne użyte do utworzenia użytkownika
+                googleId: userResponse.userId,
+                email: userResponse.email,
+                name: userResponse.name,
+            },
         });
-        const authTokenExists = await db.User.findOne({
-            where: { authToken: userData.authToken },
-        });
-        if (emailExists || authTokenExists) {
-            return res.status(409).json({ type: "ERROR", message: "Conficts while creating new user" });
-        }
-
-        const user = await db.User.create(userData); // Utwórz użytkownika z przekazanych danych
 
         // Wygeneruj token JWT
         const token = jwt.sign({ user: user }, process.env.JWT_SECRET, {
-            expiresIn: "7d", // Token będzie ważny przez 1 dzień
+            expiresIn: "7d", // Token będzie ważny przez 7 dni
         });
 
         // Zwróć odpowiedź zawierającą token i dane użytkownika
         return res.status(200).json({
             status: "SUCCESS",
-            user: user,
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+            },
             token: token,
+            newUser: created, // Informacja, czy użytkownik został właśnie utworzony
         });
     } catch (error) {
         return res.status(500).json({
