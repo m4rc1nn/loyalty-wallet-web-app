@@ -4,6 +4,7 @@ const { body, validationResult, check } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
+const { checkCompanyToken } = require("../../../middlewares/authMiddleware");
 const googleUtil = require("../../../utils/googleUtil");
 
 const { db } = require("../../../database/db");
@@ -59,7 +60,7 @@ router.post(
             });
 
             return res.status(201).json({
-                status: "SUCCESS",
+                type: "SUCCESS",
                 company: {
                     id: company.id,
                     email: company.email,
@@ -119,7 +120,7 @@ router.post(
 
             // Successfully logged in
             return res.status(200).json({
-                status: "SUCCESS",
+                type: "SUCCESS",
                 company: company,
                 token: token,
             });
@@ -165,7 +166,7 @@ router.post("/auth/user/login", [body("email").isEmail(), body("authToken").isSt
 
         // Zwróć odpowiedź zawierającą token i dane użytkownika
         return res.status(200).json({
-            status: "SUCCESS",
+            type: "SUCCESS",
             user: {
                 id: user.id,
                 email: user.email,
@@ -173,6 +174,22 @@ router.post("/auth/user/login", [body("email").isEmail(), body("authToken").isSt
             },
             token: token,
             newUser: created, // Informacja, czy użytkownik został właśnie utworzony
+        });
+    } catch (error) {
+        return res.status(500).json({
+            type: "ERROR",
+            message: error.message,
+        });
+    }
+});
+
+router.post("/auth/company/logout", checkCompanyToken, async (req, res) => {
+    try {
+        await db.LogoutToken.create({
+            token: req.token,
+        });
+        return res.status(200).json({
+            type: "SUCCESS",
         });
     } catch (error) {
         return res.status(500).json({

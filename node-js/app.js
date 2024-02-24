@@ -43,7 +43,7 @@ app.use("/api", tempCodePostRouter);
 app.use("/api", userGetRouter);
 
 db.sequelize.sync({ alter: true }).then(() => {
-	app.listen(process.env.PORT, () => {
-		console.log(`Server running on port ${process.env.PORT}`);
-	});
+    app.listen(process.env.PORT, () => {
+        console.log(`Server running on port ${process.env.PORT}`);
+    });
 });
