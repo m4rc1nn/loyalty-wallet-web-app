@@ -2,11 +2,16 @@
 
 import { useEffect } from "react";
 import { useCompanyAuth } from "../context/CompanyAuthContext";
+import Sidebar from "@/components/dashboard/Sidebar";
 
 export default function DashboardPage() {
     const { checkSession } = useCompanyAuth();
     useEffect(() => {
         checkSession(true);
     }, []);
-    return <h1>Dashboard</h1>;
+    return (
+        <section>
+            <Sidebar type="dashboard" />
+        </section>
+    );
 }

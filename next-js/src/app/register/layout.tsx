@@ -1,4 +1,5 @@
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import type { Metadata } from "next";
 import { CookiesProvider } from "next-client-cookies/server";
 import { Inter } from "next/font/google";
@@ -19,6 +20,7 @@ export default function Layout({
         <html lang="en">
             <body className={`${inter.className} bg-gray-50 dark:bg-gray-900 dark`}>
                 <CookiesProvider>
+                    <Header />
                     {children}
                     <Footer />
                 </CookiesProvider>

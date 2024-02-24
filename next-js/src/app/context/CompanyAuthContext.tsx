@@ -33,7 +33,7 @@ export function CompanyAuthProvider({ children }: { children: React.ReactNode })
                     Authorization: `Bearer ${token}`,
                 },
             });
-            if (response && response.data.status === "SUCCESS") {
+            if (response && response.data.type === "SUCCESS") {
                 if (redirect) {
                     return router.push(process.env.NEXT_PUBLIC_URL + "/dashboard");
                 }

@@ -17,11 +17,12 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>;
 
-export default function RegisterPage() {
+export default function LoginPage() {
     const cookies = useCookies();
     const router = useRouter();
     const { checkSession } = useCompanyAuth();
 
+    const [error, setError] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const {
@@ -35,13 +36,13 @@ export default function RegisterPage() {
             setIsLoading(true);
             const authResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/company/login`, data);
             setIsLoading(false);
-            if (authResponse.data.status === "SUCCESS") {
+            if (authResponse.data.type === "SUCCESS") {
                 cookies.set("auth_token", authResponse.data.token);
                 router.push("../dashboard");
             }
         } catch (error) {
             setIsLoading(false);
-            alert("Nieprawidłowe dane.");
+            setError("Nieprawidłowe dane.");
         }
     };
 
@@ -64,6 +65,7 @@ export default function RegisterPage() {
                                 </label>
                                 <input
                                     {...register("email")}
+                                    onChange={() => setError("")}
                                     type="email"
                                     name="email"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -77,6 +79,7 @@ export default function RegisterPage() {
                                 </label>
                                 <input
                                     {...register("password")}
+                                    onChange={() => setError("")}
                                     type="password"
                                     name="password"
                                     placeholder="••••••••"
@@ -107,12 +110,12 @@ export default function RegisterPage() {
                                                 fill="currentFill"
                                             />
                                         </svg>
-                                        <span className="sr-only">Loading...</span>
                                     </div>
                                 ) : (
                                     "Zaloguj się"
                                 )}
                             </button>
+                            {error.trim() !== "" && <span className="text-center text-red-600">{error}</span>}
                             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                                 Nie masz konta?{" "}
                                 <Link

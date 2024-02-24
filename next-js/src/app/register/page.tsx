@@ -35,7 +35,7 @@ export default function RegisterPage() {
             setIsLoading(true);
             const authResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/company/register`, data);
             setIsLoading(false);
-            if (authResponse.data.status === "SUCCESS") {
+            if (authResponse.data.type === "SUCCESS") {
                 cookies.set("auth_token", authResponse.data.token);
                 router.push("../dashboard");
             }
