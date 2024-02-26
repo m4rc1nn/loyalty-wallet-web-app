@@ -45,7 +45,7 @@ export default function Sidebar({ type }: SidebarProps) {
                         alt={"Logo LoyaltyApp"}
                     />
                     <span className="ml-3 self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-                        LoyaltyApp
+                        Loyalty.io
                     </span>
                 </span>
                 <ul className="space-y-2 font-medium">

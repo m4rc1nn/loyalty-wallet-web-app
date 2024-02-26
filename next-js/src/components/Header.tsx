@@ -20,7 +20,7 @@ export function Header() {
                             alt={"Logo LoyaltyApp"}
                         />
                         <span className="pl-3 self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-                            LoyaltyApp
+                            Loyalty.io
                         </span>
                     </a>
                     <div className="flex items-center lg:order-2">

@@ -112,6 +112,27 @@ export default function RegisterPage() {
                                     <span className=" text-red-600">Hasła nie są takie same.</span>
                                 )}
                             </div>
+                            <div className="flex items-start mb-5">
+                                <div className="flex items-center h-5">
+                                    <input
+                                        id="terms"
+                                        type="checkbox"
+                                        defaultValue=""
+                                        className="w-4 h-4 border border-gray-300 rounded bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
+                                        required={true}
+                                    />
+                                </div>
+                                <label
+                                    htmlFor="terms"
+                                    className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                    Oświadczam, ze przeczytałem i akceptuje{" "}
+                                    <a href="#" className="text-primary-600 hover:underline dark:text-primary-500">
+                                        regulamin
+                                    </a>
+                                    .
+                                </label>
+                            </div>
+
                             <button
                                 type="submit"
                                 className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 flex justify-center items-center">
@@ -132,7 +153,6 @@ export default function RegisterPage() {
                                                 fill="currentFill"
                                             />
                                         </svg>
-                                        <span className="sr-only">Loading...</span>
                                     </div>
                                 ) : (
                                     "Zarejestruj się"
