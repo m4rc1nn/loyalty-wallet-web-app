@@ -2,6 +2,7 @@ export type User = {
     id: string;
     name: string;
     messages: Message[];
+    createdAt: Date;
 };
 
 export type Message = {
