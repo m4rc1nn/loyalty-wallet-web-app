@@ -30,8 +30,7 @@ router.get("/cards", checkUserToken, async (req, res) => {
 			cards.map(async (card) => {
 				const actions = await db.Action.findAll({
 					where: {
-						userId: req.user.id,
-						companyId: card.companyId,
+						cardId: card.id,
 					},
 				});
 
