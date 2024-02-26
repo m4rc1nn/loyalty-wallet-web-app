@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
 			companyId: { type: Sequelize.UUID, allowNull: false },
 			name: { type: Sequelize.STRING },
 			description: { type: Sequelize.STRING },
-			type: { type: Sequelize.ENUM, values: ["ADD", "SUBTRACK"] },
+			type: { type: Sequelize.ENUM, values: ["ADD", "SUBTRACT"] },
 			amount: { type: Sequelize.INTEGER },
 		},
 		{}
