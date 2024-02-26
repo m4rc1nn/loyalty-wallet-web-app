@@ -16,7 +16,7 @@ export function UserTempCodeVerification({ setUserId }: { setUserId: (userId: st
 
             setUserId("is-usera-zmienic-to");
         } catch (error) {
-            alert("Nie znaleziono uzytkownika");
+            //alert("Nie znaleziono uzytkownika");
             setUserId("is-usera-zmienic-to"); //to do usuniecia na produckcji
         }
     };

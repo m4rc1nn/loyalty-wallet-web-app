@@ -5,6 +5,10 @@ import { AddPointsBox } from "./AddPointsBox";
 export function AddPoints() {
     const [userId, setUserId] = useState<string | null>(null);
 
+    const clearUserId = () => {
+        setUserId(null);
+    };
+
     return (
         <div className="flex flex-row justify-center items-center w-full">
             {userId === null ? (
@@ -12,7 +16,7 @@ export function AddPoints() {
                     <UserTempCodeVerification setUserId={(userId: string) => setUserId(userId)} />
                 </div>
             ) : (
-                <AddPointsBox userId={userId} />
+                <AddPointsBox userId={userId} clearUserId={() => clearUserId()} />
             )}
         </div>
     );
