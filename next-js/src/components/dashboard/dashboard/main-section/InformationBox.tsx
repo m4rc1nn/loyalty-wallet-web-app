@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 function UsersIcon() {
     return (
         <svg
@@ -45,10 +47,29 @@ function GiftsIcon() {
 type InformationBoxProps = {
     icon: string;
     text: string;
-    value: string;
+    value: number;
 };
 
 export function InformationBox({ icon = "USERS", text, value }: InformationBoxProps) {
+    const [displayValue, setDisplayValue] = useState<number>(0);
+
+    useEffect(() => {
+        const duration = 1000;
+        const increment = value / (duration / 16.6667); //60 fps
+        let currentDisplayValue = value - 100 < 0 ? 0 : value - 100;
+
+        const interval = setInterval(() => {
+            currentDisplayValue += increment;
+            if (currentDisplayValue >= value) {
+                currentDisplayValue = value;
+                clearInterval(interval);
+            }
+            setDisplayValue(Math.floor(currentDisplayValue));
+        }, 16.6667); //60 fps
+
+        return () => clearInterval(interval); 
+    }, [value]); 
+
     return (
         <div className="w-full flex flex-col justify-start items-center">
             <div>
@@ -57,7 +78,8 @@ export function InformationBox({ icon = "USERS", text, value }: InformationBoxPr
                 {icon === "GIFTS" && <GiftsIcon />}
             </div>
             <p className="mt-3 font-normal text-gray-700 dark:text-gray-400">{text}</p>
-            <p className="mt-3 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">{value}</p>
+            {/* Use `displayValue` here for the animated count */}
+            <p className="mt-3 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">{displayValue}</p>
         </div>
     );
 }

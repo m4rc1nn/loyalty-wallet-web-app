@@ -1,7 +1,8 @@
+import { User } from "@/app/types/User";
 import axios from "axios";
 import React, { useState, useRef, ChangeEvent, KeyboardEvent } from "react";
 
-export function UserTempCodeVerification({ setUserId }: { setUserId: (userId: string) => void }) {
+export function UserTempCodeVerification({ setUser }: { setUser: (user: User) => void }) {
     const [code, setCode] = useState<string[]>(Array(6).fill(""));
     const inputsRef = useRef<HTMLInputElement[]>([]);
 
@@ -10,14 +11,15 @@ export function UserTempCodeVerification({ setUserId }: { setUserId: (userId: st
             const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/api/temp-code/" + code.join(""));
             if (response.data.type !== "SUCCESS") {
                 alert("Nie znaleziono uzytkownika");
+                setCode(Array(6).fill(""));
+                focusNextInput(1, "previous");
                 return;
             }
-            //setUserId(response.data.user.id);
-
-            setUserId("is-usera-zmienic-to");
+            setUser(response.data.user);
         } catch (error) {
-            //alert("Nie znaleziono uzytkownika");
-            setUserId("is-usera-zmienic-to"); //to do usuniecia na produckcji
+            alert("Nie znaleziono uzytkownika");
+            setCode(Array(6).fill(""));
+            focusNextInput(1, "previous");
         }
     };
 

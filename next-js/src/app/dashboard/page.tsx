@@ -1,19 +1,15 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
+import { MainSection } from "@/components/dashboard/dashboard/main-section/MainSection";
 import { useCompanyAuth } from "../context/CompanyAuthContext";
-import Sidebar from "@/components/dashboard/Sidebar";
-import { MainSection } from "@/components/dashboard/main-section/MainSection";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
-    const { checkSession } = useCompanyAuth();
+    const {checkSession} = useCompanyAuth();
     useEffect(() => {
         checkSession(true);
-    }, []);
+    })
     return (
-        <section>
-            <Sidebar type="dashboard" />
-            <MainSection />
-        </section>
+        <MainSection />
     );
 }

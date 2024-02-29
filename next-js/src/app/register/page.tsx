@@ -5,15 +5,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
+
+type Category = {
+    id: number;
+    name: string;
+};
 
 const schema = z.object({
     name: z.string().min(4),
     email: z.string().email(),
     password: z.string().min(8),
     confirmedPassword: z.string().min(8),
+    categoryId: z.string(),
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -23,6 +29,7 @@ export default function RegisterPage() {
     const router = useRouter();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [categories, setCategories] = useState<Category[]>([]);
 
     const {
         register,
@@ -44,6 +51,20 @@ export default function RegisterPage() {
             alert("Wystąpił bład.");
         }
     };
+
+    useEffect(() => {
+        const fetch = async () => {
+            try {
+                const companyResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`);
+                if(companyResponse) {
+                    setCategories(companyResponse.data.categories);
+                }
+            } catch(error) {
+                console.log('error', error)
+            }
+        };
+        fetch();
+    }, []);
 
     return (
         <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
@@ -108,6 +129,22 @@ export default function RegisterPage() {
                                     placeholder="••••••••"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 />
+                                {errors.confirmedPassword && (
+                                    <span className=" text-red-600">Hasła nie są takie same.</span>
+                                )}
+                            </div>
+                            <div>
+                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Kategoria
+                                </label>
+                                <select
+                                    {...register("categoryId")}
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    {categories.map((category: Category) => (
+                                        <option value={category.id}>{category.name}</option>
+                                    ))}
+                                </select>
+
                                 {errors.confirmedPassword && (
                                     <span className=" text-red-600">Hasła nie są takie same.</span>
                                 )}

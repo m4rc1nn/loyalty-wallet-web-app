@@ -1,22 +1,23 @@
 import { useState } from "react";
 import { UserTempCodeVerification } from "./UserTempCodeVerification";
 import { AddPointsBox } from "./AddPointsBox";
+import { User } from "@/app/types/User";
 
 export function AddPoints() {
-    const [userId, setUserId] = useState<string | null>(null);
+    const [user, setUser] = useState<User | null>(null);
 
-    const clearUserId = () => {
-        setUserId(null);
+    const clearUser = () => {
+        setUser(null);
     };
 
     return (
         <div className="flex flex-row justify-center items-center w-full">
-            {userId === null ? (
+            {user === null ? (
                 <div className="w-full flex justify-center items-center">
-                    <UserTempCodeVerification setUserId={(userId: string) => setUserId(userId)} />
+                    <UserTempCodeVerification setUser={(user: User) => setUser(user)} />
                 </div>
             ) : (
-                <AddPointsBox userId={userId} clearUserId={() => clearUserId()} />
+                <AddPointsBox user={user} clearUser={() => clearUser()} />
             )}
         </div>
     );

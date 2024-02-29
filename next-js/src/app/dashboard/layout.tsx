@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CookiesProvider } from "next-client-cookies/server";
 import { Inter } from "next/font/google";
 import { CompanyAuthProvider } from "../context/CompanyAuthContext";
+import Sidebar from "@/components/dashboard/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,10 @@ export default function Layout({
         <html lang="en">
             <body className={`${inter.className} min-h-screen bg-gray-50 dark:bg-gray-900 dark`}>
                 <CookiesProvider>
-                    <CompanyAuthProvider>{children}</CompanyAuthProvider>
+                    <CompanyAuthProvider>
+                        <Sidebar />
+                        <main className="p-4 md:ml-64 h-auto">{children}</main>
+                    </CompanyAuthProvider>
                 </CookiesProvider>
             </body>
         </html>

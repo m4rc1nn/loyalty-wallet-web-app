@@ -1,15 +1,16 @@
+import { useCompanyAuth } from "@/app/context/CompanyAuthContext";
 import { User, Message } from "@/app/types/User";
+import axios from "axios";
+import { useCookies } from "next-client-cookies";
 import { useEffect, useState } from "react";
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
 type AddPointsBoxProps = {
-    userId: string;
-    clearUserId: () => void;
+    user: User;
+    clearUser: () => void;
 };
 
-export function AddPointsBox({ userId, clearUserId }: AddPointsBoxProps) {
-    const [user, setUser] = useState<User | null>(null);
+export function AddPointsBox({ user, clearUser }: AddPointsBoxProps) {
+    const cookies = useCookies();
     const [messages, setMessages] = useState<Message[]>([]);
 
     const [points, setPoints] = useState<number>(1);
@@ -26,6 +27,36 @@ export function AddPointsBox({ userId, clearUserId }: AddPointsBoxProps) {
         setPoints((prev) => --prev);
     };
 
+    const addPointsToClient = async () => {
+        const token = cookies.get("auth_token") as string;
+        try {
+            const response = await axios.post(
+                process.env.NEXT_PUBLIC_API_URL + `/api/actions`,
+                {
+                    userId: user.id,
+                    name: "Dodanie punktow klientowi.",
+                    description: inputPointsMessage,
+                    type: "ADD",
+                    amount: points,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.data.type !== "SUCCESS") {
+                alert("Blad podczas dodawania punktów");
+                return;
+            }
+            alert(`Dodano ${points} klientowi ${user.name}`);
+            clearUser();
+        } catch (error) {
+            console.log(error);
+            alert("Blad podczas dodawania punktów");
+        }
+    };
+
     const addMessage = () => {
         if (inputMessage.length <= 3 && inputMessage.trim() === "") {
             alert("Wiadomość jest zbyt krótka.");
@@ -36,17 +67,6 @@ export function AddPointsBox({ userId, clearUserId }: AddPointsBoxProps) {
         setInputMessage("");
         //send message to api
     };
-
-    useEffect(() => {
-        const fetch = async () => {
-            //const user = await getUser(userId);
-            //setMessages(user.messages)
-            //setUser(user)
-            await sleep(2000);
-            setUser({ id: "ss", name: "Marek", messages: [], createdAt: new Date() });
-        };
-        fetch();
-    }, []);
 
     if (user === null) {
         return (
@@ -132,12 +152,13 @@ export function AddPointsBox({ userId, clearUserId }: AddPointsBoxProps) {
                 <div className="mt-6 flex flex-row jusify-center items-center gap-3">
                     <button
                         type="button"
-                        onClick={() => clearUserId()}
+                        onClick={() => clearUser()}
                         className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600">
                         Cofnij
                     </button>
                     <button
                         type="button"
+                        onClick={() => addPointsToClient()}
                         className="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600">
                         Dodaj punkty {inputPointsMessage.trim() === "" ? "bez wiadomości" : "z wiadomością"}
                     </button>
